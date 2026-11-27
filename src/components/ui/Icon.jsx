@@ -38,6 +38,7 @@ const paths = {
     </>
   ),
   play: <path d="m9 5 11 7-11 7Z" fill="currentColor" stroke="none" />,
+  pause: <path d="M7 5h3v14H7ZM14 5h3v14h-3Z" fill="currentColor" stroke="none" />,
   previous: (
     <>
       <path d="M6 5v14M18 5 8 12l10 7Z" />

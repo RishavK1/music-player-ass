@@ -2,21 +2,20 @@
 
 A React application for browsing a song library and organising personal playlists.
 
-## Current status
+## Features
 
-The song library loads 12 mock songs with Axios from `public/songs.json`. Search
-by title or artist and combine it with a genre filter. Song rows show titles,
-artists, genres, and durations, with responsive layouts for small screens.
+- Browse 12 songs loaded from `public/songs.json` using Axios.
+- Search by title or artist and filter by genre.
+- Create, rename, and delete playlists with name validation and delete confirmation.
+- Add and remove songs, prevent duplicates, and reorder with Up/Down controls.
+- View live song counts and total playlist durations.
+- Save playlists and song order in localStorage.
+- Use simulated Play/Pause and Next/Previous controls with visible playback states.
+- Switch between Library and Playlist views on smaller screens without losing filters.
+- Keyboard-accessible controls, labelled dialogs, and loading, empty, and error states.
 
-Loading, empty catalogue, no-results, and recoverable error states are included.
-On smaller screens, the Library and Playlist buttons switch between panels
-without resetting the search.
-
-Create, select, rename, and delete playlists with confirmation. Names are required
-and case-insensitively unique. Playlists persist in localStorage across refreshes.
-Add or remove songs, prevent duplicates, and change playlist order with Up/Down
-buttons. Counts and total durations update immediately. Membership and order
-persist across refreshes. Simulated playback follows in the next stage.
+Playback is simulated, as required by the assessment; the application does not
+play audio.
 
 ## Requirements
 
@@ -47,10 +46,33 @@ The production files are generated in `dist/`.
 npm test
 ```
 
-Uses Node's built-in test runner. Tests cover catalogue validation, title/artist
-search, combined filtering, genre derivation, duration formatting, playlist
-validation, membership, ordering, computed summaries, immutable operations, and
-storage failures.
+Uses Node's built-in test runner with no additional test dependencies. Tests cover
+catalogue validation, search and filtering, playlist validation and ordering,
+duration calculations, storage failures, and playback state transitions.
+
+### Manual checks
+
+1. Create a playlist; check blank and duplicate names are rejected.
+2. Search by title/artist, combine with genre, then clear filters.
+3. Add three songs; check duplicate Add is disabled and summaries update.
+4. Reorder songs and refresh; confirm membership and order persist.
+5. Rename the playlist; cancel deletion, then confirm deletion of a test playlist.
+6. Play from Library or a playlist. Pause, then use Next/Previous; confirm the
+   paused state is retained and navigation stops at queue boundaries.
+7. Remove the current song or delete its source playlist; confirm playback stops.
+8. Check keyboard focus, dialog Escape/Cancel, and layouts at 375, 768, and
+   1440 CSS px. The player should not cover the workspace's final content.
+
+## Static deployment
+
+Build command: `npm run build`. Publish directory: `dist`.
+
+Deploy at the domain root with HTTPS. Serve `songs.json`, `fonts/`, and `assets/`
+as static files; they must not be replaced with an HTML fallback. No backend,
+environment variables, API keys, or external music service are required.
+
+The current asset paths assume root hosting. Hosting under a URL subdirectory
+requires updating Vite's base and the catalogue/font asset paths first.
 
 ## Tech stack
 
@@ -60,67 +82,35 @@ storage failures.
 - Axios
 - Browser localStorage for playlist persistence
 
-## Structure
+## Project structure
 
 ```text
 public/
-  favicon.svg
-  songs.json
-  fonts/
-    Manrope-Variable.ttf
-    OFL.txt
+  songs.json          # Song catalogue
+  fonts/              # Self-hosted Manrope font and licence
 src/
-  components/
-    ui/
-      Button.jsx
-      Icon.jsx
-      Input.jsx
-      Modal.jsx
-    AppShell.jsx
-    EmptyState.jsx
-    PlayerBar.jsx
-    PlaylistPanel.jsx
-    PlaylistCard.jsx
-    PlaylistDialog.jsx
-    SongLibrary.jsx
-    SongRow.jsx
-  hooks/
-    useSongs.js
-    usePlaylists.js
-  utils/
-    formatDuration.js
-    songs.js
-    playlists.js
-    playlistStorage.js
-  styles/
-    index.css
-  App.jsx
-  main.jsx
-index.html
-vite.config.js
-tests/
-  songs.test.js
-  playlists.test.js
+  components/         # Library, playlists, player, and shared UI controls
+  hooks/              # Catalogue loading, playlist state, and playback
+  utils/              # Validation, filtering, storage, and queue operations
+  styles/             # Theme, layout, and control styles
+  App.jsx             # Application composition
+tests/                # Node test suites
 ```
 
-## Implementation stages
-
-1. Project setup.
-2. Responsive interface foundation and reusable controls.
-3. Song catalogue, loading states, search, and genre filtering.
-4. Playlist creation, renaming, deletion, and local persistence.
-5. Song membership, ordering, and playlist summaries.
-6. Simulated playback controls.
-7. Responsive polish, accessibility checks, and deployment.
-
-## Assumptions
+## Behaviour and data
 
 - Song metadata is loaded from `public/songs.json` using Axios.
 - Songs and artists in the mock catalogue are fictional. IDs are unique strings,
   and durations are non-negative whole seconds. Invalid catalogues show an error.
 - Search is case-insensitive, matches titles or artists, and trims surrounding
   spaces. Search and genre filters are combined with AND.
-- Playback will be simulated; no audio files or external music API are needed.
+- Playback is simulated; no audio, elapsed timer, external music API, or streaming.
+  Select a song using its play icon. Clicking the current song toggles pause.
+- Next/Previous follow the full catalogue when started from Library, or live
+  playlist order when started from a playlist. Search does not change that queue.
+  Buttons stop at boundaries and preserve the playing/paused state.
+- Removing the current song or deleting its source playlist clears playback.
+  Playback is session-only and returns to idle after refresh; playlists persist.
 - Playlist names are trimmed, limited to 120 characters and compared
   case-insensitively. Renaming to the current name is allowed.
 - Playlists are saved under `music-playlist-manager:v1` in the current browser.
@@ -132,15 +122,9 @@ tests/
 
 ## Development notes
 
-Dependency versions are pinned and `package-lock.json` is committed. Dependency
-lifecycle scripts are disabled through `.npmrc`. The current build uses published
-precompiled tooling and does not require enabling install scripts.
+Dependency versions are pinned in `package.json` and `package-lock.json`.
+Dependency lifecycle scripts are disabled through `.npmrc`.
 
 The Manrope variable font is self-hosted with its SIL Open Font License in
 `public/fonts/OFL.txt`. Icons and the record-sleeve illustration are authored
 locally. The application makes no font-service requests at runtime.
-
-## Future improvements
-
-After the core functionality is complete, potential improvements include automated
-interaction tests, drag-and-drop ordering, and real audio playback.

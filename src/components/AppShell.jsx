@@ -35,7 +35,8 @@ export default function AppShell({
 
             <Button
               ref={createButtonRef}
-              variant="secondary"
+              variant="ghost"
+              className="sidebar-create"
               onClick={onCreatePlaylist}
             >
               <Icon name="plus" size="small" />
@@ -47,18 +48,17 @@ export default function AppShell({
             <nav aria-label="Library">
               <a
                 href="#song-library"
-                aria-current="page"
-                className="flex min-h-control items-center gap-3 rounded-control bg-accent px-4 py-3 text-sm font-semibold"
+                className="sidebar-library"
               >
-                <Icon name="library" />
-                Song library
+                <Icon name="library" size="small" />
+                Library
               </a>
             </nav>
 
             <section aria-labelledby="sidebar-playlists" className="sidebar-collection">
               <div className="flex shrink-0 items-center justify-between gap-3">
-                <h2 id="sidebar-playlists" className="text-sm font-semibold">
-                  Your playlists
+                <h2 id="sidebar-playlists" className="text-sm font-medium text-muted-foreground">
+                  Playlists
                 </h2>
                 <span className="text-sm tabular-nums text-muted-foreground">
                   {playlists.length}

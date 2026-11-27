@@ -2,6 +2,7 @@ import EmptyState from './EmptyState.jsx';
 import Button from './ui/Button.jsx';
 import SongRow from './SongRow.jsx';
 import Icon from './ui/Icon.jsx';
+import PlaybackButton from './PlaybackButton.jsx';
 import { getPlaylistDetails } from '../utils/playlists.js';
 import { formatTotalDuration } from '../utils/formatDuration.js';
 
@@ -13,7 +14,7 @@ export default function PlaylistPanel({
   onRename,
   onDelete,
   onCreate,
-  songs, status, retry, onRemove, onMove, onBrowse,
+  songs, status, retry, onRemove, onMove, onBrowse, player,
 }) {
   const details = playlist ? getPlaylistDetails(playlist, songs) : null;
   const movedControl = useRef(null);
@@ -129,6 +130,7 @@ export default function PlaylistPanel({
                   const title = song?.title ?? `Unavailable song (${id})`;
                   const actions = (
                     <>
+                      {song && <PlaybackButton song={song} player={player} source={{ type: 'playlist', id: playlist.id }} />}
                       <Button
                         variant="ghost"
                         iconOnly
@@ -155,7 +157,14 @@ export default function PlaylistPanel({
                     </>
                   );
                   return song ? (
-                    <SongRow key={id} song={song} compact position={index + 1} actions={actions} />
+                    <SongRow
+                      key={id}
+                      song={song}
+                      compact
+                      position={index + 1}
+                      actions={actions}
+                      playbackState={player.song?.id === id ? (player.playing ? 'Playing' : 'Paused') : null}
+                    />
                   ) : (
                     <li key={id} className="song-row song-row--compact">
                       <p className="song-title text-sm">{index + 1}. {title}</p>

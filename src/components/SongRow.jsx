@@ -1,11 +1,12 @@
 import { formatDuration } from '../utils/formatDuration.js';
 
-export default function SongRow({ song, actions, compact = false, position }) {
+export default function SongRow({ song, actions, compact = false, position, playbackState }) {
   return (
-    <li className={`song-row${compact ? ' song-row--compact' : ''}`}>
+    <li className={`song-row${compact ? ' song-row--compact' : ''}`} data-current={Boolean(playbackState)}>
       <p className="song-title min-w-0 text-sm font-semibold">
         {position && <span className="text-muted-foreground">{position}. </span>}
         {song.title}
+        {playbackState && <span className="song-playback-state">{playbackState}</span>}
       </p>
       {compact ? (
         <div className="song-metadata text-sm text-muted-foreground">

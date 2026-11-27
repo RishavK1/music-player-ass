@@ -5,9 +5,10 @@ import SongRow from './SongRow.jsx';
 import Button from './ui/Button.jsx';
 import Icon from './ui/Icon.jsx';
 import Input from './ui/Input.jsx';
+import PlaybackButton from './PlaybackButton.jsx';
 
 export default function SongLibrary({
-  active, songs, status, retry, playlists, playlist, onSelect, onAdd, onCreate,
+  active, songs, status, retry, playlists, playlist, onSelect, onAdd, onCreate, player,
 }) {
   const [query, setQuery] = useState('');
   const [genre, setGenre] = useState('');
@@ -44,6 +45,14 @@ export default function SongLibrary({
         <h2 id="library-heading" className="text-xl font-semibold tracking-display">
           Song library
         </h2>
+        <div className="library-heading-meta">
+          <p role="status" aria-atomic="true" className="text-sm text-muted-foreground">
+            {resultLabel}
+          </p>
+          {hasFilters && (visibleSongs.length > 0 || !isReady) && (
+            <Button variant="ghost" onClick={clearFilters}>Clear filters</Button>
+          )}
+        </div>
       </header>
 
       <div className="library-toolbar">
@@ -78,14 +87,11 @@ export default function SongLibrary({
             </select>
           </div>
         </div>
-      </div>
-
-      <div className="playlist-destination">
-        {playlists.length ? (
-          <div className="field">
-            <label htmlFor="add-destination" className="text-sm font-medium">
-              Add songs to
-            </label>
+        <div className="field playlist-destination">
+          <label htmlFor="add-destination" className="text-sm font-medium">
+            Add songs to
+          </label>
+          {playlists.length ? (
             <div className="field-control">
               <select
                 id="add-destination"
@@ -94,28 +100,18 @@ export default function SongLibrary({
                 onChange={(event) => onSelect(event.target.value)}
               >
                 {playlists.map((item) => (
-                  <option key={item.id} value={item.id}>{item.name}</option>
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
                 ))}
               </select>
             </div>
-          </div>
-        ) : (
-          <div className="flex flex-wrap items-center gap-3">
-            <p className="text-sm text-muted-foreground">Create a playlist to add songs.</p>
-            <Button variant="secondary" onClick={onCreate}>New playlist</Button>
-          </div>
-        )}
-      </div>
-
-      <div className="library-status">
-        <p role="status" aria-atomic="true" className="text-sm text-muted-foreground">
-          {resultLabel}
-        </p>
-        {hasFilters && (visibleSongs.length > 0 || !isReady) && (
-          <Button variant="ghost" onClick={clearFilters}>
-            Clear filters
-          </Button>
-        )}
+          ) : (
+            <Button id="add-destination" variant="secondary" onClick={onCreate}>
+              <Icon name="plus" size="small" /> New playlist
+            </Button>
+          )}
+        </div>
       </div>
 
       <div
@@ -132,7 +128,7 @@ export default function SongLibrary({
           <span>Artist</span>
           <span>Genre</span>
           <span className="text-right">Duration</span>
-          <span className="text-right">Add</span>
+          <span className="text-right">Actions</span>
         </div>
         {status === 'loading' ? (
           <ul aria-hidden="true">
@@ -189,7 +185,10 @@ export default function SongLibrary({
               <SongRow
                 key={song.id}
                 song={song}
+                playbackState={player.song?.id === song.id ? (player.playing ? 'Playing' : 'Paused') : null}
                 actions={
+                  <>
+                  <PlaybackButton song={song} player={player} source={{ type: 'library' }} />
                   <Button
                     variant="ghost"
                     iconOnly
@@ -209,6 +208,7 @@ export default function SongLibrary({
                       ? <Icon name="check" size="small" />
                       : <Icon name="plus" size="small" />}
                   </Button>
+                  </>
                 }
               />
             ))}

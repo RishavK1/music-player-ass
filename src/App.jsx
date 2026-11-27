@@ -6,6 +6,7 @@ import SongLibrary from './components/SongLibrary.jsx';
 import PlaylistDialog from './components/PlaylistDialog.jsx';
 import usePlaylists from './hooks/usePlaylists.js';
 import useSongs from './hooks/useSongs.js';
+import usePlayer from './hooks/usePlayer.js';
 import Button from './components/ui/Button.jsx';
 import Icon from './components/ui/Icon.jsx';
 
@@ -15,6 +16,7 @@ export default function App() {
   const createButtonRef = useRef(null);
   const collection = usePlaylists();
   const catalogue = useSongs();
+  const player = usePlayer(catalogue.songs, collection.playlists);
 
   function selectPlaylist(id) {
     collection.select(id);
@@ -37,7 +39,7 @@ export default function App() {
   return (
     <>
     <AppShell
-      player={<PlayerBar />}
+      player={<PlayerBar player={player} />}
       playlists={collection.playlists}
       selectedId={collection.selectedPlaylist?.id}
       onSelectPlaylist={selectPlaylist}
@@ -97,6 +99,7 @@ export default function App() {
           onSelect={collection.select}
           onAdd={collection.addSong}
           onCreate={openCreate}
+          player={player}
         />
         <PlaylistPanel
           active={activeView === 'playlist'}
@@ -110,6 +113,7 @@ export default function App() {
           onRemove={collection.removeSong}
           onMove={collection.moveSong}
           onBrowse={() => setActiveView('library')}
+          player={player}
         />
       </div>
 
