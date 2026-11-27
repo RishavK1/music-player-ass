@@ -1,16 +1,58 @@
+import { useState } from 'react';
+import AppShell from './components/AppShell.jsx';
+import PlayerBar from './components/PlayerBar.jsx';
+import PlaylistPanel from './components/PlaylistPanel.jsx';
+import SongLibrary from './components/SongLibrary.jsx';
+import Button from './components/ui/Button.jsx';
+import Icon from './components/ui/Icon.jsx';
+
 export default function App() {
+  const [activeView, setActiveView] = useState('library');
+
   return (
-    <main className="mx-auto flex min-h-dvh max-w-content flex-col justify-center gap-4 px-4 py-12 md:px-6 lg:px-8">
-      <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
-        Music Playlist Manager
-      </h1>
-      <p className="max-w-prose text-base text-muted-foreground">
-        A personal space for your music and playlists.
+    <AppShell player={<PlayerBar />}>
+      <header className="flex flex-col gap-3 border-b border-border pb-8">
+        <h1 className="text-3xl font-semibold tracking-display md:text-4xl">
+          Your collection
+        </h1>
+        <p className="max-w-copy text-sm text-muted-foreground">
+          The songs you love. The order you choose.
+        </p>
+      </header>
+
+      <div className="view-switcher" role="group" aria-label="Collection view">
+        <Button
+          variant="ghost"
+          aria-pressed={activeView === 'library'}
+          aria-controls="song-library"
+          onClick={() => setActiveView('library')}
+        >
+          <Icon name="library" size="small" />
+          Library
+        </Button>
+        <Button
+          variant="ghost"
+          aria-pressed={activeView === 'playlist'}
+          aria-controls="playlist"
+          onClick={() => setActiveView('playlist')}
+        >
+          <Icon name="playlist" size="small" />
+          Playlist
+        </Button>
+      </div>
+
+      <div className="workspace-panels">
+        <SongLibrary active={activeView === 'library'} />
+        <PlaylistPanel active={activeView === 'playlist'} />
+      </div>
+
+      <p
+        id="foundation-note"
+        className="mt-auto max-w-copy pt-4 text-xs leading-body text-muted-foreground"
+      >
+        Interface preview. Song loading, playlist editing, and playback controls
+        are not connected yet.
       </p>
-      <p className="max-w-prose text-sm text-muted-foreground">
-        The application is being built. Song browsing and playlist controls will
-        follow.
-      </p>
-    </main>
+    </AppShell>
   );
 }
