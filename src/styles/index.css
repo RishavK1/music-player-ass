@@ -63,6 +63,7 @@
   --spacing-duration: 4rem;
   --spacing-player-compact: 5rem;
   --container-genre: 12rem;
+  --container-dialog: 30rem;
   --radius-control: 0.5rem;
   --radius-panel: 1rem;
   --radius-small: 0.25rem;
@@ -82,6 +83,7 @@
     --focus-width: 2px;
     --focus-offset: 4px;
     --icon-stroke: 1.5px;
+    --overlay-scrim: rgb(0 0 0 / 60%);
 
     color-scheme: dark;
     font-family: var(--font-sans);
@@ -190,7 +192,21 @@
   }
 
   .collection-header {
+    position: relative;
     flex-shrink: 0;
+  }
+
+  .storage-notice {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: --spacing(3);
+    margin-top: --spacing(3);
+  }
+
+  .storage-notice p {
+    flex: 1;
+    min-width: 0;
   }
 
   .sidebar-header {
@@ -211,6 +227,84 @@
 
   .desktop-playlists {
     display: none;
+    min-height: 0;
+    flex: 1;
+  }
+
+  .sidebar-collection {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    gap: --spacing(4);
+  }
+
+  .playlist-list {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    display: flex;
+    flex-direction: column;
+    gap: --spacing(2);
+    padding: var(--focus-offset);
+    margin: calc(-1 * var(--focus-offset));
+    scrollbar-width: thin;
+  }
+
+  .playlist-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: --spacing(1);
+    width: 100%;
+    min-height: var(--spacing-control);
+    padding: --spacing(3);
+    border: var(--border-width) solid transparent;
+    border-radius: var(--radius-control);
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color var(--duration-fast) var(--ease-standard);
+  }
+
+  .playlist-card:hover {
+    background: var(--color-accent);
+  }
+
+  .playlist-card[aria-pressed="true"] {
+    background: var(--color-accent);
+    border-color: var(--color-input);
+  }
+
+  .modal {
+    width: min(
+      var(--container-dialog),
+      calc(100% - --spacing(8))
+    );
+    max-width: none;
+    max-height: calc(100dvh - --spacing(8));
+    margin: auto;
+    padding: --spacing(6);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--radius-panel);
+    background: var(--color-popover);
+    color: var(--color-foreground);
+    overflow-y: auto;
+    overflow-wrap: anywhere;
+  }
+
+  .modal::backdrop {
+    background: var(--overlay-scrim);
+  }
+
+  .modal-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: --spacing(2);
+  }
+
+  .modal .field p {
+    min-height: calc(var(--text-sm) * var(--leading-body));
   }
 
   .library-columns {
@@ -356,6 +450,20 @@
     border-color: var(--color-input);
     background: transparent;
     color: var(--color-foreground);
+  }
+
+  .button--destructive {
+    color: var(--color-destructive);
+    border-color: var(--color-input);
+    background: transparent;
+  }
+
+  .button--destructive:hover {
+    background: var(--color-accent);
+  }
+
+  .button--destructive:active {
+    background: var(--color-card);
   }
 
   .button--ghost {
@@ -612,6 +720,8 @@
     }
 
     .app-sidebar {
+      display: flex;
+      flex-direction: column;
       border-bottom: 0;
       border-right: var(--border-width) solid var(--color-border);
     }

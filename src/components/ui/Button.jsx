@@ -1,4 +1,4 @@
-const variants = new Set(['primary', 'secondary', 'ghost']);
+const variants = new Set(['primary', 'secondary', 'ghost', 'destructive']);
 
 export default function Button({
   children,

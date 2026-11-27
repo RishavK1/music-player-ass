@@ -12,8 +12,9 @@ Loading, empty catalogue, no-results, and recoverable error states are included.
 On smaller screens, the Library and Playlist buttons switch between panels
 without resetting the search.
 
-Playlist creation and playback remain intentionally disabled until their
-functionality is implemented.
+Create, select, rename, and delete playlists with confirmation. Names are required
+and case-insensitively unique. Playlists persist in localStorage across refreshes.
+Song membership, reordering, and playback follow in later stages.
 
 ## Requirements
 
@@ -45,7 +46,8 @@ npm test
 ```
 
 Uses Node's built-in test runner. Tests cover catalogue validation, title/artist
-search, combined filtering, genre derivation, and duration formatting.
+search, combined filtering, genre derivation, duration formatting, playlist
+validation and immutable operations, and storage failures.
 
 ## Tech stack
 
@@ -53,7 +55,7 @@ search, combined filtering, genre derivation, and duration formatting.
 - Vite
 - Tailwind CSS
 - Axios
-- Browser localStorage for playlist persistence in a later stage
+- Browser localStorage for playlist persistence
 
 ## Structure
 
@@ -70,17 +72,23 @@ src/
       Button.jsx
       Icon.jsx
       Input.jsx
+      Modal.jsx
     AppShell.jsx
     EmptyState.jsx
     PlayerBar.jsx
     PlaylistPanel.jsx
+    PlaylistCard.jsx
+    PlaylistDialog.jsx
     SongLibrary.jsx
     SongRow.jsx
   hooks/
     useSongs.js
+    usePlaylists.js
   utils/
     formatDuration.js
     songs.js
+    playlists.js
+    playlistStorage.js
   styles/
     index.css
   App.jsx
@@ -89,6 +97,7 @@ index.html
 vite.config.js
 tests/
   songs.test.js
+  playlists.test.js
 ```
 
 ## Implementation stages
@@ -109,7 +118,12 @@ tests/
 - Search is case-insensitive, matches titles or artists, and trims surrounding
   spaces. Search and genre filters are combined with AND.
 - Playback will be simulated; no audio files or external music API are needed.
-- Playlists will be saved in the current browser using localStorage.
+- Playlist names are trimmed, limited to 120 characters and compared
+  case-insensitively. Renaming to the current name is allowed.
+- Playlists are saved under `music-playlist-manager:v1` in the current browser.
+  This does not sync between devices. Invalid saved data is preserved rather
+  than overwritten; the app then works in session-only mode with a warning.
+- Blocked storage or quota errors display a warning and a Retry save action.
 
 ## Development notes
 

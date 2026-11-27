@@ -1,7 +1,16 @@
 import Button from './ui/Button.jsx';
 import Icon from './ui/Icon.jsx';
+import PlaylistCard from './PlaylistCard.jsx';
 
-export default function AppShell({ children, player }) {
+export default function AppShell({
+  children,
+  player,
+  playlists,
+  selectedId,
+  onSelectPlaylist,
+  onCreatePlaylist,
+  createButtonRef,
+}) {
   return (
     <div className="app-frame">
       <a href="#main-content" className="skip-link">
@@ -25,9 +34,9 @@ export default function AppShell({ children, player }) {
             </a>
 
             <Button
+              ref={createButtonRef}
               variant="secondary"
-              disabled
-              title="Playlist creation is not connected yet"
+              onClick={onCreatePlaylist}
             >
               <Icon name="plus" size="small" />
               New playlist
@@ -46,18 +55,30 @@ export default function AppShell({ children, player }) {
               </a>
             </nav>
 
-            <section aria-labelledby="sidebar-playlists" className="space-y-4">
-              <div className="flex items-center justify-between gap-3">
+            <section aria-labelledby="sidebar-playlists" className="sidebar-collection">
+              <div className="flex shrink-0 items-center justify-between gap-3">
                 <h2 id="sidebar-playlists" className="text-sm font-semibold">
                   Your playlists
                 </h2>
                 <span className="text-sm tabular-nums text-muted-foreground">
-                  0
+                  {playlists.length}
                 </span>
               </div>
-              <p className="text-sm leading-body text-muted-foreground">
-                No playlists yet.
-              </p>
+              {playlists.length === 0 ? (
+                <p className="text-sm text-muted-foreground">No playlists yet.</p>
+              ) : (
+                <ul className="playlist-list" aria-label="Your playlists">
+                  {playlists.map((playlist) => (
+                    <li key={playlist.id}>
+                      <PlaylistCard
+                        playlist={playlist}
+                        selected={playlist.id === selectedId}
+                        onSelect={onSelectPlaylist}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              )}
             </section>
           </div>
         </aside>
