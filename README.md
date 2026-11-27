@@ -4,13 +4,16 @@ A React application for browsing a song library and organising personal playlist
 
 ## Current status
 
-The responsive interface foundation is in place: a collection sidebar, library
-and playlist panels, shared controls, and an idle player bar. On smaller screens,
-the Library and Playlist buttons switch between panels.
+The song library loads 12 mock songs with Axios from `public/songs.json`. Search
+by title or artist and combine it with a genre filter. Song rows show titles,
+artists, genres, and durations, with responsive layouts for small screens.
 
-Search, genre filtering, playlist creation, and playback are intentionally
-disabled until their functionality is implemented. No songs or playlists are
-fabricated for the interface preview. Axios is installed for the next stage.
+Loading, empty catalogue, no-results, and recoverable error states are included.
+On smaller screens, the Library and Playlist buttons switch between panels
+without resetting the search.
+
+Playlist creation and playback remain intentionally disabled until their
+functionality is implemented.
 
 ## Requirements
 
@@ -35,6 +38,15 @@ npm run preview
 
 The production files are generated in `dist/`.
 
+## Tests
+
+```sh
+npm test
+```
+
+Uses Node's built-in test runner. Tests cover catalogue validation, title/artist
+search, combined filtering, genre derivation, and duration formatting.
+
 ## Tech stack
 
 - React
@@ -48,6 +60,7 @@ The production files are generated in `dist/`.
 ```text
 public/
   favicon.svg
+  songs.json
   fonts/
     Manrope-Variable.ttf
     OFL.txt
@@ -62,12 +75,20 @@ src/
     PlayerBar.jsx
     PlaylistPanel.jsx
     SongLibrary.jsx
+    SongRow.jsx
+  hooks/
+    useSongs.js
+  utils/
+    formatDuration.js
+    songs.js
   styles/
     index.css
   App.jsx
   main.jsx
 index.html
 vite.config.js
+tests/
+  songs.test.js
 ```
 
 ## Implementation stages
@@ -82,7 +103,11 @@ vite.config.js
 
 ## Assumptions
 
-- Song metadata will be loaded from `public/songs.json` using Axios.
+- Song metadata is loaded from `public/songs.json` using Axios.
+- Songs and artists in the mock catalogue are fictional. IDs are unique strings,
+  and durations are non-negative whole seconds. Invalid catalogues show an error.
+- Search is case-insensitive, matches titles or artists, and trims surrounding
+  spaces. Search and genre filters are combined with AND.
 - Playback will be simulated; no audio files or external music API are needed.
 - Playlists will be saved in the current browser using localStorage.
 

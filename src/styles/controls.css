@@ -1,0 +1,23 @@
+@layer components {
+  .input-control > .field-input {
+    min-height: 0;
+    height: calc(var(--spacing-control) - 2 * var(--border-width));
+  }
+
+  .field-control.input-control:focus-within {
+    border-color: var(--color-input);
+  }
+
+  .input-control[data-invalid="true"]:focus-within {
+    border-color: var(--color-destructive);
+  }
+
+  .input-control:has(> .field-input:focus-visible) {
+    outline: var(--focus-width) solid var(--color-ring);
+    outline-offset: calc(-1 * var(--border-width));
+  }
+
+  .input-control:has(> .field-input:focus-visible) > .field-input:focus-visible {
+    outline: none;
+  }
+}

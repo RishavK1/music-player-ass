@@ -19,14 +19,14 @@ export default function PlayerBar() {
       <div
         role="group"
         aria-label="Playback controls"
-        className="flex flex-wrap items-center justify-center gap-4"
+        className="flex flex-wrap items-center justify-center gap-2"
       >
         <Button
           variant="ghost"
           iconOnly
           disabled
           aria-label="Previous song"
-          aria-describedby="foundation-note"
+          title="Playback is not connected yet"
         >
           <Icon name="previous" />
         </Button>
@@ -35,7 +35,7 @@ export default function PlayerBar() {
           iconOnly
           disabled
           aria-label="Play"
-          aria-describedby="foundation-note"
+          title="Playback is not connected yet"
           className="transport-play"
         >
           <Icon name="play" size="large" />
@@ -45,7 +45,7 @@ export default function PlayerBar() {
           iconOnly
           disabled
           aria-label="Next song"
-          aria-describedby="foundation-note"
+          title="Playback is not connected yet"
         >
           <Icon name="next" />
         </Button>

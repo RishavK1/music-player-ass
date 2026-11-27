@@ -11,13 +11,10 @@ export default function App() {
 
   return (
     <AppShell player={<PlayerBar />}>
-      <header className="flex flex-col gap-3 border-b border-border pb-8">
-        <h1 className="text-3xl font-semibold tracking-display md:text-4xl">
+      <header className="collection-header">
+        <h1 className="text-2xl font-semibold tracking-display">
           Your collection
         </h1>
-        <p className="max-w-copy text-sm text-muted-foreground">
-          The songs you love. The order you choose.
-        </p>
       </header>
 
       <div className="view-switcher" role="group" aria-label="Collection view">
@@ -46,13 +43,6 @@ export default function App() {
         <PlaylistPanel active={activeView === 'playlist'} />
       </div>
 
-      <p
-        id="foundation-note"
-        className="mt-auto max-w-copy pt-4 text-xs leading-body text-muted-foreground"
-      >
-        Interface preview. Song loading, playlist editing, and playback controls
-        are not connected yet.
-      </p>
     </AppShell>
   );
 }

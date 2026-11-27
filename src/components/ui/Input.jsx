@@ -23,7 +23,7 @@ export default function Input({
       <label htmlFor={inputId} className="text-sm font-medium">
         {label}
       </label>
-      <div className="field-control" data-invalid={Boolean(error)}>
+      <div className="field-control input-control" data-invalid={Boolean(error)}>
         {icon}
         <input
           {...props}

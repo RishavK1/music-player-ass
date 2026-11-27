@@ -6,19 +6,19 @@ export default function PlaylistPanel({ active }) {
       id="playlist"
       aria-labelledby="playlist-heading"
       data-active={active}
-      className="playlist-panel min-w-0 xl:pl-8"
+      className="playlist-panel min-w-0"
     >
       <h2
         id="playlist-heading"
-        className="mb-8 text-xl font-semibold tracking-display"
+        className="mb-6 text-xl font-semibold tracking-display"
       >
         Your playlist
       </h2>
 
       <EmptyState
-        title="A mix that’s entirely yours"
+        title="No playlist selected"
         artwork={
-          <div className="sleeve" aria-hidden="true">
+          <div className="sleeve sleeve--compact" aria-hidden="true">
             <div className="sleeve-record">
               <div className="sleeve-label">
                 <span className="sleeve-spindle" />
@@ -27,13 +27,8 @@ export default function PlaylistPanel({ active }) {
           </div>
         }
       >
-        Start with a name, add a few favourites, and put them in just the right
-        order. Your selected playlist will appear here.
+        Select a playlist to see its songs.
       </EmptyState>
-
-      <p className="mt-8 border-t border-border pt-6 text-sm text-muted-foreground">
-        No playlist selected.
-      </p>
     </section>
   );
 }

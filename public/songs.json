@@ -1,0 +1,86 @@
+[
+  {
+    "id": "song-001",
+    "title": "Midnight Drive",
+    "artist": "Neon Coast",
+    "genre": "Electronic",
+    "duration": 215
+  },
+  {
+    "id": "song-002",
+    "title": "Paper Skies",
+    "artist": "June Harbor",
+    "genre": "Indie",
+    "duration": 242
+  },
+  {
+    "id": "song-003",
+    "title": "The Quiet Between",
+    "artist": "Low Season",
+    "genre": "Ambient",
+    "duration": 308
+  },
+  {
+    "id": "song-004",
+    "title": "Sunday on Mercer",
+    "artist": "Ellis Quartet",
+    "genre": "Jazz",
+    "duration": 276
+  },
+  {
+    "id": "song-005",
+    "title": "Slow Bloom",
+    "artist": "Mara Sol",
+    "genre": "Soul",
+    "duration": 198
+  },
+  {
+    "id": "song-006",
+    "title": "Open Windows",
+    "artist": "The North Line",
+    "genre": "Alternative",
+    "duration": 231
+  },
+  {
+    "id": "song-007",
+    "title": "After the Last Train",
+    "artist": "Neon Coast",
+    "genre": "Electronic",
+    "duration": 264
+  },
+  {
+    "id": "song-008",
+    "title": "Somewhere Near Home",
+    "artist": "June Harbor",
+    "genre": "Indie",
+    "duration": 187
+  },
+  {
+    "id": "song-009",
+    "title": "A Softer Horizon",
+    "artist": "Low Season",
+    "genre": "Ambient",
+    "duration": 352
+  },
+  {
+    "id": "song-010",
+    "title": "Blue Hour Conversation",
+    "artist": "Ellis Quartet",
+    "genre": "Jazz",
+    "duration": 294
+  },
+  {
+    "id": "song-011",
+    "title": "Stay a Little Longer",
+    "artist": "Mara Sol",
+    "genre": "Soul",
+    "duration": 223
+  },
+  {
+    "id": "song-012",
+    "title": "All the Roads We Didn’t Take",
+    "artist": "The North Line",
+    "genre": "Alternative",
+    "duration": 249
+  }
+]

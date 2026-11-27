@@ -10,14 +10,14 @@ export default function AppShell({ children, player }) {
 
       <div className="app-body">
         <aside className="app-sidebar" aria-label="Collection navigation">
-          <div className="flex items-center justify-between gap-4 p-4 md:p-6 xl:flex-col xl:items-stretch xl:gap-8 xl:py-8">
+          <div className="sidebar-header">
             <a
               href="/"
               className="flex min-h-control min-w-0 items-center gap-3 rounded-control"
             >
-              <Icon name="record" className="size-wordmark text-primary" />
+              <Icon name="record" size="large" className="text-primary" />
               <span className="flex min-w-0 flex-col">
-                <span className="text-xl font-bold tracking-display">Music</span>
+                <span className="text-lg font-semibold tracking-display">Music</span>
                 <span className="text-xs text-muted-foreground">
                   Playlist manager
                 </span>
@@ -27,7 +27,6 @@ export default function AppShell({ children, player }) {
             <Button
               variant="secondary"
               disabled
-              aria-describedby="foundation-note"
               title="Playlist creation is not connected yet"
             >
               <Icon name="plus" size="small" />
@@ -35,7 +34,7 @@ export default function AppShell({ children, player }) {
             </Button>
           </div>
 
-          <div className="desktop-playlists flex-col gap-8 px-6 pb-8">
+          <div className="desktop-playlists flex-col gap-6 px-4 pb-4">
             <nav aria-label="Library">
               <a
                 href="#song-library"
@@ -57,8 +56,7 @@ export default function AppShell({ children, player }) {
                 </span>
               </div>
               <p className="text-sm leading-body text-muted-foreground">
-                A home for your favourite combinations. Your playlists will
-                appear here.
+                No playlists yet.
               </p>
             </section>
           </div>
@@ -67,7 +65,7 @@ export default function AppShell({ children, player }) {
         <main
           id="main-content"
           tabIndex={-1}
-          className="workspace flex flex-col gap-8 px-4 py-8 md:px-6 xl:px-8"
+          className="workspace"
         >
           {children}
         </main>
