@@ -79,3 +79,46 @@ export function renamePlaylist(playlists, id, name) {
 export function deletePlaylist(playlists, id) {
   return playlists.filter((playlist) => playlist.id !== id);
 }
+
+export function addSongToPlaylist(playlists, playlistId, songId) {
+  return playlists.map((playlist) =>
+    playlist.id === playlistId && !playlist.songIds.includes(songId)
+      ? { ...playlist, songIds: [...playlist.songIds, songId] }
+      : playlist,
+  );
+}
+
+export function removeSongFromPlaylist(playlists, playlistId, songId) {
+  return playlists.map((playlist) =>
+    playlist.id === playlistId && playlist.songIds.includes(songId)
+      ? { ...playlist, songIds: playlist.songIds.filter((id) => id !== songId) }
+      : playlist,
+  );
+}
+
+export function movePlaylistSong(playlists, playlistId, songId, direction) {
+  if (direction !== -1 && direction !== 1) return playlists;
+
+  return playlists.map((playlist) => {
+    if (playlist.id !== playlistId) return playlist;
+    const index = playlist.songIds.indexOf(songId);
+    const nextIndex = index + direction;
+    if (index < 0 || nextIndex < 0 || nextIndex >= playlist.songIds.length) {
+      return playlist;
+    }
+    const songIds = [...playlist.songIds];
+    [songIds[index], songIds[nextIndex]] = [songIds[nextIndex], songIds[index]];
+    return { ...playlist, songIds };
+  });
+}
+
+export function getPlaylistDetails(playlist, songs) {
+  const byId = new Map(songs.map((song) => [song.id, song]));
+  const playlistSongs = playlist.songIds.map((id) => byId.get(id)).filter(Boolean);
+
+  return {
+    songs: playlistSongs,
+    missingIds: playlist.songIds.filter((id) => !byId.has(id)),
+    totalSeconds: playlistSongs.reduce((total, song) => total + song.duration, 0),
+  };
+}

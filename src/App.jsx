@@ -5,6 +5,7 @@ import PlaylistPanel from './components/PlaylistPanel.jsx';
 import SongLibrary from './components/SongLibrary.jsx';
 import PlaylistDialog from './components/PlaylistDialog.jsx';
 import usePlaylists from './hooks/usePlaylists.js';
+import useSongs from './hooks/useSongs.js';
 import Button from './components/ui/Button.jsx';
 import Icon from './components/ui/Icon.jsx';
 
@@ -13,6 +14,7 @@ export default function App() {
   const [dialog, setDialog] = useState(null);
   const createButtonRef = useRef(null);
   const collection = usePlaylists();
+  const catalogue = useSongs();
 
   function selectPlaylist(id) {
     collection.select(id);
@@ -87,7 +89,15 @@ export default function App() {
       </div>
 
       <div className="workspace-panels">
-        <SongLibrary active={activeView === 'library'} />
+        <SongLibrary
+          active={activeView === 'library'}
+          {...catalogue}
+          playlists={collection.playlists}
+          playlist={collection.selectedPlaylist}
+          onSelect={collection.select}
+          onAdd={collection.addSong}
+          onCreate={openCreate}
+        />
         <PlaylistPanel
           active={activeView === 'playlist'}
           playlist={collection.selectedPlaylist}
@@ -96,6 +106,10 @@ export default function App() {
           onRename={(playlist) => setDialog({ mode: 'rename', playlist })}
           onDelete={(playlist) => setDialog({ mode: 'delete', playlist })}
           onCreate={openCreate}
+          {...catalogue}
+          onRemove={collection.removeSong}
+          onMove={collection.moveSong}
+          onBrowse={() => setActiveView('library')}
         />
       </div>
 

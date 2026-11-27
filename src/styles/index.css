@@ -46,7 +46,7 @@
 
   --container-content: 80rem;
   --container-sidebar: 15rem;
-  --container-detail: 20rem;
+  --container-detail: 18rem;
   --container-copy: 28rem;
   --spacing-control: 3rem;
   --spacing-transport: 4rem;
@@ -348,7 +348,7 @@
     grid-column: 1 / -1;
     display: flex;
     flex-wrap: wrap;
-    gap: --spacing(4);
+    gap: --spacing(2);
     margin-top: --spacing(2);
   }
 
@@ -410,6 +410,61 @@
 
   .playlist-panel {
     padding-block: --spacing(4);
+  }
+
+  .playlist-destination {
+    margin-top: --spacing(4);
+    flex-shrink: 0;
+  }
+
+  .button.song-add {
+    padding-inline: --spacing(1);
+    white-space: nowrap;
+  }
+
+  .playlist-content {
+    display: flex;
+    flex-direction: column;
+    gap: --spacing(4);
+    min-width: 0;
+    min-height: 0;
+  }
+
+  .playlist-heading-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: --spacing(2);
+    margin-bottom: --spacing(3);
+    flex-shrink: 0;
+  }
+
+  .playlist-tools {
+    display: flex;
+    gap: --spacing(2);
+    flex-shrink: 0;
+  }
+
+  .playlist-summary {
+    display: flex;
+    flex-direction: column;
+    gap: --spacing(1);
+    min-width: 0;
+    flex-shrink: 0;
+  }
+
+  .playlist-content > .browse-songs {
+    align-self: flex-start;
+  }
+
+  .playlist-results {
+    position: relative;
+    border-top: var(--border-width) solid var(--color-border);
+    padding-top: --spacing(4);
+    min-height: 0;
+    scrollbar-width: thin;
+    scroll-padding-block: --spacing(4);
   }
 
   .button {
@@ -654,14 +709,15 @@
     .song-row {
       display: grid;
       grid-template-columns:
-        minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr)
-        var(--spacing-duration);
+         minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr)
+         var(--spacing-duration) var(--spacing-control);
       column-gap: --spacing(4);
     }
 
     .song-row {
       min-height: var(--spacing-track);
       align-items: center;
+      padding-block: --spacing(2);
     }
 
     .song-title,
@@ -670,6 +726,13 @@
     .song-duration {
       grid-column: auto;
       grid-row: auto;
+    }
+
+    .library-panel .song-actions {
+      grid-column: 5;
+      grid-row: 1;
+      margin-top: 0;
+      justify-content: flex-end;
     }
 
     .player-bar {
@@ -752,13 +815,62 @@
     .playlist-panel {
       border-left: var(--border-width) solid var(--color-border);
       padding: 0 0 0 --spacing(6);
+      overflow: visible;
+    }
+
+    .playlist-results {
       overflow-y: auto;
-      scrollbar-width: thin;
+      padding-inline: var(--focus-offset);
+      overscroll-behavior-y: contain;
     }
 
     .player-bar {
       padding-inline: --spacing(8);
     }
+  }
+
+  .song-row--compact {
+    grid-template-columns: minmax(0, 1fr) var(--spacing-duration);
+    align-items: start;
+    min-height: 0;
+    padding-block: --spacing(3);
+    column-gap: --spacing(2);
+  }
+
+  .song-row--compact .song-title { grid-column: 1; grid-row: 1; }
+  .song-row--compact .song-artist { grid-column: 1; grid-row: 2; }
+  .song-row--compact .song-genre { grid-column: 1; grid-row: 3; }
+  .song-row--compact .song-duration { grid-column: 2; grid-row: 1; }
+  .song-row--compact .song-metadata {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: --spacing(3);
+    row-gap: --spacing(1);
+  }
+  .song-row--compact .song-actions {
+    grid-row: 3;
+    justify-content: flex-end;
+    margin-top: 0;
+  }
+
+  .playlist-tools .button,
+  .song-row--compact .button {
+    color: var(--color-muted-foreground);
+  }
+
+  .playlist-tools .button:hover,
+  .song-row--compact .button:not(:disabled),
+  .song-row--compact .button:hover:not(:disabled) {
+    color: var(--color-foreground);
+  }
+
+  .playlist-tools .button:disabled,
+  .song-row--compact .button:disabled,
+  .library-panel .song-add:disabled {
+    background: transparent;
+    border-color: transparent;
   }
 
   @media (max-height: 30rem) {
@@ -773,7 +885,8 @@
     }
 
     .workspace,
-    .library-results {
+    .library-results,
+    .playlist-results {
       overflow: visible;
     }
 

@@ -4,6 +4,9 @@ import {
   deletePlaylist,
   getPlaylistNameError,
   renamePlaylist,
+  addSongToPlaylist,
+  removeSongFromPlaylist,
+  movePlaylistSong,
 } from '../utils/playlists.js';
 import { readPlaylists, writePlaylists } from '../utils/playlistStorage.js';
 
@@ -73,6 +76,38 @@ export default function usePlaylists() {
     }
   }
 
+  function updateSongs(operation, playlistId, songId, announcementText) {
+    setCollection((previous) => {
+      const next = operation(previous.playlists, playlistId, songId);
+      if (next.every((playlist, index) => playlist === previous.playlists[index])) {
+        return previous;
+      }
+      return { playlists: next, revision: previous.revision + 1 };
+    });
+    setAnnouncement(announcementText);
+  }
+
+  function addSong(playlistId, song) {
+    updateSongs(addSongToPlaylist, playlistId, song.id, `Added “${song.title}”.`);
+  }
+
+  function removeSong(playlistId, songId, title) {
+    updateSongs(removeSongFromPlaylist, playlistId, songId, `Removed “${title}”.`);
+  }
+
+  function moveSong(playlistId, songId, direction, title) {
+    const playlist = playlists.find((item) => item.id === playlistId);
+    const index = playlist?.songIds.indexOf(songId) ?? -1;
+    const target = index + direction;
+    if (index < 0 || target < 0 || target >= playlist.songIds.length) return;
+    updateSongs(
+      (items, id, trackId) => movePlaylistSong(items, id, trackId, direction),
+      playlistId,
+      songId,
+      `Moved “${title}” to position ${target + 1}.`,
+    );
+  }
+
   return {
     playlists,
     selectedPlaylist,
@@ -83,5 +118,8 @@ export default function usePlaylists() {
     storageIssue,
     retrySave,
     announcement,
+    addSong,
+    removeSong,
+    moveSong,
   };
 }

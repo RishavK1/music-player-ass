@@ -6,7 +6,12 @@ import {
   getPlaylistNameError,
   renamePlaylist,
   validatePlaylists,
+  addSongToPlaylist,
+  removeSongFromPlaylist,
+  movePlaylistSong,
+  getPlaylistDetails,
 } from '../src/utils/playlists.js';
+import { formatTotalDuration } from '../src/utils/formatDuration.js';
 import {
   PLAYLIST_STORAGE_KEY,
   readPlaylists,
@@ -17,6 +22,78 @@ const seed = [
   { id: 'focus', name: 'Focus', songIds: ['song-001', 'song-002'] },
   { id: 'weekend', name: 'Weekend', songIds: [] },
 ];
+
+test('add appends once and preserves other playlists', () => {
+  const added = addSongToPlaylist(seed, 'focus', 'song-003');
+  assert.deepEqual(added[0].songIds, ['song-001', 'song-002', 'song-003']);
+  assert.equal(added[1], seed[1]);
+  assert.equal(seed[0].songIds.length, 2);
+  const duplicate = addSongToPlaylist(added, 'focus', 'song-003');
+  assert.equal(duplicate[0], added[0]);
+});
+
+test('membership is independent between playlists', () => {
+  const added = addSongToPlaylist(seed, 'weekend', 'song-001');
+  const removed = removeSongFromPlaylist(added, 'focus', 'song-001');
+  assert.deepEqual(removed[0].songIds, ['song-002']);
+  assert.deepEqual(removed[1].songIds, ['song-001']);
+  assert.equal(removed[1], added[1]);
+});
+
+test('missing song and playlist removal are no-ops', () => {
+  assert.equal(removeSongFromPlaylist(seed, 'focus', 'missing')[0], seed[0]);
+  assert.deepEqual(removeSongFromPlaylist(seed, 'missing', 'song-001'), seed);
+  assert.deepEqual(addSongToPlaylist(seed, 'missing', 'song-001'), seed);
+});
+
+test('move swaps neighbours immutably in either direction', () => {
+  const down = movePlaylistSong(seed, 'focus', 'song-001', 1);
+  assert.deepEqual(down[0].songIds, ['song-002', 'song-001']);
+  assert.equal(down[1], seed[1]);
+  assert.deepEqual(movePlaylistSong(down, 'focus', 'song-001', -1), seed);
+  assert.deepEqual(seed[0].songIds, ['song-001', 'song-002']);
+});
+
+test('boundary moves, missing IDs, and invalid directions are no-ops', () => {
+  for (const [id, direction] of [['song-001', -1], ['song-002', 1], ['missing', 1], ['song-001', 2]]) {
+    assert.equal(movePlaylistSong(seed, 'focus', id, direction)[0], seed[0]);
+  }
+  assert.deepEqual(movePlaylistSong(seed, 'missing', 'song-001', 1), seed);
+  const single = [{ id: 'one', name: 'One', songIds: ['a'] }];
+  assert.equal(movePlaylistSong(single, 'one', 'a', 1)[0], single[0]);
+});
+
+test('summary resolves playlist order and sums exact seconds', () => {
+  const songs = [{ id: 'song-002', duration: 91 }, { id: 'song-001', duration: 120 }];
+  const result = getPlaylistDetails(seed[0], songs);
+  assert.deepEqual(result.songs.map((song) => song.id), ['song-001', 'song-002']);
+  assert.equal(result.totalSeconds, 211);
+  assert.deepEqual(result.missingIds, []);
+  assert.deepEqual(getPlaylistDetails(seed[1], songs), { songs: [], missingIds: [], totalSeconds: 0 });
+});
+
+test('missing catalogue songs are reported without changing saved memberships', () => {
+  const result = getPlaylistDetails(seed[0], [{ id: 'song-002', duration: 91 }]);
+  assert.deepEqual(result.missingIds, ['song-001']);
+  assert.equal(result.totalSeconds, 91);
+  assert.equal(seed[0].songIds.length, 2);
+});
+
+test('total duration supports empty, minute boundaries and hour-long playlists', () => {
+  assert.equal(formatTotalDuration(0), '0 min');
+  assert.equal(formatTotalDuration(60), '1 min');
+  assert.equal(formatTotalDuration(211), '3 min 31 sec');
+  assert.equal(formatTotalDuration(3661), '61 min 1 sec');
+});
+
+test('membership and reorder changes survive a storage round trip', () => {
+  const storage = memoryStorage();
+  const added = addSongToPlaylist(seed, 'focus', 'song-003');
+  const reordered = movePlaylistSong(added, 'focus', 'song-003', -1);
+  const removed = removeSongFromPlaylist(reordered, 'focus', 'song-001');
+  assert.equal(writePlaylists(removed, storage), true);
+  assert.deepEqual(readPlaylists(storage).playlists[0].songIds, ['song-003', 'song-002']);
+});
 
 function memoryStorage(initial) {
   const values = new Map(Object.entries(initial ?? {}));

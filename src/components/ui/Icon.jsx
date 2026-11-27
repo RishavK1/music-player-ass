@@ -11,6 +11,20 @@ const paths = {
     </>
   ),
   plus: <path d="M12 5v14M5 12h14" />,
+  check: <path d="m5 12 4 4L19 6" />,
+  up: <path d="m6 14 6-6 6 6" />,
+  down: <path d="m6 10 6 6 6-6" />,
+  close: <path d="m6 6 12 12M18 6 6 18" />,
+  edit: (
+    <>
+      <path d="m15 4 5 5M4 20l5-1L20 8a2 2 0 0 0-5-5L4 14Z" />
+    </>
+  ),
+  trash: (
+    <>
+      <path d="M4 6h16M9 6V3h6v3M6 6l1 15h10l1-15M10 10v7M14 10v7" />
+    </>
+  ),
   record: (
     <>
       <circle cx="12" cy="12" r="9" />

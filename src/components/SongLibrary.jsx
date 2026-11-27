@@ -1,5 +1,4 @@
 import { useRef, useState } from 'react';
-import useSongs from '../hooks/useSongs.js';
 import { filterSongs, getGenres } from '../utils/songs.js';
 import EmptyState from './EmptyState.jsx';
 import SongRow from './SongRow.jsx';
@@ -7,8 +6,9 @@ import Button from './ui/Button.jsx';
 import Icon from './ui/Icon.jsx';
 import Input from './ui/Input.jsx';
 
-export default function SongLibrary({ active }) {
-  const { songs, status, retry } = useSongs();
+export default function SongLibrary({
+  active, songs, status, retry, playlists, playlist, onSelect, onAdd, onCreate,
+}) {
   const [query, setQuery] = useState('');
   const [genre, setGenre] = useState('');
   const searchRef = useRef(null);
@@ -80,6 +80,33 @@ export default function SongLibrary({ active }) {
         </div>
       </div>
 
+      <div className="playlist-destination">
+        {playlists.length ? (
+          <div className="field">
+            <label htmlFor="add-destination" className="text-sm font-medium">
+              Add songs to
+            </label>
+            <div className="field-control">
+              <select
+                id="add-destination"
+                className="field-input"
+                value={playlist?.id ?? ''}
+                onChange={(event) => onSelect(event.target.value)}
+              >
+                {playlists.map((item) => (
+                  <option key={item.id} value={item.id}>{item.name}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-wrap items-center gap-3">
+            <p className="text-sm text-muted-foreground">Create a playlist to add songs.</p>
+            <Button variant="secondary" onClick={onCreate}>New playlist</Button>
+          </div>
+        )}
+      </div>
+
       <div className="library-status">
         <p role="status" aria-atomic="true" className="text-sm text-muted-foreground">
           {resultLabel}
@@ -105,6 +132,7 @@ export default function SongLibrary({ active }) {
           <span>Artist</span>
           <span>Genre</span>
           <span className="text-right">Duration</span>
+          <span className="text-right">Add</span>
         </div>
         {status === 'loading' ? (
           <ul aria-hidden="true">
@@ -158,7 +186,31 @@ export default function SongLibrary({ active }) {
         ) : (
           <ul aria-label="Songs">
             {visibleSongs.map((song) => (
-              <SongRow key={song.id} song={song} />
+              <SongRow
+                key={song.id}
+                song={song}
+                actions={
+                  <Button
+                    variant="ghost"
+                    iconOnly
+                    className="song-add"
+                    disabled={!playlist || playlist.songIds.includes(song.id)}
+                    aria-label={
+                      playlist?.songIds.includes(song.id)
+                        ? `Already added: ${song.title}`
+                        : playlist
+                          ? `Add ${song.title} to ${playlist.name}`
+                          : `Create a playlist to add ${song.title}`
+                    }
+                    title={playlist?.songIds.includes(song.id) ? 'Added' : 'Add song'}
+                    onClick={() => onAdd(playlist.id, song)}
+                  >
+                    {playlist?.songIds.includes(song.id)
+                      ? <Icon name="check" size="small" />
+                      : <Icon name="plus" size="small" />}
+                  </Button>
+                }
+              />
             ))}
           </ul>
         )}

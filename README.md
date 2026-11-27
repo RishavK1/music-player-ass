@@ -14,7 +14,9 @@ without resetting the search.
 
 Create, select, rename, and delete playlists with confirmation. Names are required
 and case-insensitively unique. Playlists persist in localStorage across refreshes.
-Song membership, reordering, and playback follow in later stages.
+Add or remove songs, prevent duplicates, and change playlist order with Up/Down
+buttons. Counts and total durations update immediately. Membership and order
+persist across refreshes. Simulated playback follows in the next stage.
 
 ## Requirements
 
@@ -47,7 +49,8 @@ npm test
 
 Uses Node's built-in test runner. Tests cover catalogue validation, title/artist
 search, combined filtering, genre derivation, duration formatting, playlist
-validation and immutable operations, and storage failures.
+validation, membership, ordering, computed summaries, immutable operations, and
+storage failures.
 
 ## Tech stack
 
@@ -124,6 +127,8 @@ tests/
   This does not sync between devices. Invalid saved data is preserved rather
   than overwritten; the app then works in session-only mode with a warning.
 - Blocked storage or quota errors display a warning and a Retry save action.
+- A saved song missing from the current catalogue remains visible as unavailable
+  and can be removed or reordered. Duration totals cover available songs only.
 
 ## Development notes
 
